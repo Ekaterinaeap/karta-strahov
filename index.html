@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Карта страха будущего</title>
-<meta name="description" content="Карта страхов и решений — исследование проекта «Уверенность в будущем», программа «Код лидера».">
+<title>Дерево гипотез — проект «Страх будущего»</title>
+<meta name="description" content="Дерево гипотез: от страхов к решениям — проект «Страх будущего», программа «Код лидера».">
 <meta name="robots" content="noindex">
 <style>
 @font-face{font-family:Lato;font-weight:400;src:url(https://cdn.jsdelivr.net/npm/lato-font@3.0.0/fonts/lato-normal/lato-normal.woff2) format("woff2")}
@@ -76,8 +76,8 @@ footer{color:var(--muted);font-size:13px;line-height:20px;padding:24px 0 40px}
 </head>
 <body>
 <header><div class="wrap head">
-  <p class="kicker">Исследование проекта «Уверенность в будущем» · программа «Код лидера»</p>
-  <h1>Карта страха будущего: от страха к решению</h1>
+  <p class="kicker">Проект «Страх будущего» · программа «Код лидера»</p>
+  <h1>Дерево гипотез: от страха к решению</h1>
   <div class="root">Страх будущего: заработать сейчас и убежать</div>
   <p class="lead">Четыре группы страхов. Каждая ветка читается слева направо: страх → его источник → что за ним стоит → решение.</p>
   <div class="legend">
@@ -87,14 +87,14 @@ footer{color:var(--muted);font-size:13px;line-height:20px;padding:24px 0 40px}
     <span><i class="sw" style="background:var(--c-work)"></i>Страхи на работе</span>
     <span><i class="sw" style="background:#fff;border:2px solid #66727F"></i>Карточка с подписью «Решение» — предложенное решение</span>
   </div>
-  <div class="views" role="tablist"><button role="tab" aria-selected="true" data-v="map">Карта</button><button role="tab" aria-selected="false" data-v="list">Решения списком</button></div>
+  <div class="views" role="tablist"><button role="tab" aria-selected="true" data-v="map">Дерево гипотез</button><button role="tab" aria-selected="false" data-v="list">Решения списком</button></div>
 </div></header>
 <main class="wrap">
   <nav class="nav" id="nav"></nav>
   <div id="map"></div>
   <div id="list" hidden></div>
 </main>
-<footer class="wrap">Карта составлена командой проекта по итогам исследования: опрос сотрудников, глубинные интервью, кабинетный анализ.</footer>
+<footer class="wrap">Дерево гипотез составлено командой проекта «Страх будущего» по итогам исследования: опрос сотрудников, глубинные интервью, кабинетный анализ.</footer>
 <script>
 /* s: true — решение */
 var DATA = [
@@ -150,7 +150,7 @@ function vars(c){return '--c:var(--c-'+c+');--cl:var(--c-'+c+'-l)'}
 var map='',nav='',list='';
 DATA.forEach(function(b){
   nav+='<a href="#'+b.id+'" style="color:var(--c-'+b.c+')">'+esc(b.title)+'</a>';
-  map+='<section class="branch" id="'+b.id+'" style="'+vars(b.c)+'"><h2>'+esc(b.title)+'</h2><p class="hint">Карту можно прокручивать вбок →</p><div class="scroll"><div class="tree"><ul>'+b.ch.map(function(x){return node(x,2)}).join('')+'</ul></div></div></section>';
+  map+='<section class="branch" id="'+b.id+'" style="'+vars(b.c)+'"><h2>'+esc(b.title)+'</h2><p class="hint">Дерево можно прокручивать вбок →</p><div class="scroll"><div class="tree"><ul>'+b.ch.map(function(x){return node(x,2)}).join('')+'</ul></div></div></section>';
   var items=[];(function walk(n,path){(n.ch||[]).forEach(function(x){if(x.s)items.push([x.t,path[0]]);else walk(x,path.concat(x.t))})})(b,[]);
   var g={};b.ch.forEach(function(top){(function walk(n){(n.ch||[]).forEach(function(x){if(x.s){(g[top.t]=g[top.t]||[]).push(x.t)}else walk(x)})})(top)});
   list+='<div class="sol-card" style="'+vars(b.c)+'"><h3>'+esc(b.title)+'</h3><ul>'+Object.keys(g).map(function(k){return '<li><b>'+esc(k)+'</b><small>'+g[k].map(esc).join(' · ')+'</small></li>'}).join('')+'</ul></div>';
