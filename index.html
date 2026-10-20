@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Карта страха будущего</title>
+<meta name="description" content="Карта страхов и решений — исследование проекта «Уверенность в будущем», программа «Код лидера».">
+<meta name="robots" content="noindex">
+<style>
+@font-face{font-family:Lato;font-weight:400;src:url(https://cdn.jsdelivr.net/npm/lato-font@3.0.0/fonts/lato-normal/lato-normal.woff2) format("woff2")}
+@font-face{font-family:Lato;font-weight:700;src:url(https://cdn.jsdelivr.net/npm/lato-font@3.0.0/fonts/lato-bold/lato-bold.woff2) format("woff2")}
+:root{--text:#0B1F33;--muted:#66727F;--bg:#F5F7FB;--line:#E1E6EF;
+  --c-macro:#3B4A5A;--c-macro-l:#EDF0F3;--c-inner:#B3261E;--c-inner-l:#FBEDEC;--c-family:#6A3FC8;--c-family-l:#F1ECFB;--c-work:#2E8B3E;--c-work-l:#E8F5EA}
+*{box-sizing:border-box}
+body{margin:0;font-family:Lato,Arial,sans-serif;font-size:16px;line-height:24px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1400px;margin:0 auto;padding:0 24px}
+header{background:#fff;border-bottom:1px solid var(--line)}
+.head{padding:32px 0 24px}
+.kicker{color:var(--muted);font-size:14px;line-height:20px}
+h1{margin:8px 0 0;font-size:32px;line-height:40px}
+.root{display:inline-block;margin-top:16px;border:3px solid var(--c-family);border-radius:999px;padding:10px 24px;font-weight:700;font-size:20px;line-height:28px}
+.lead{margin:16px 0 0;color:#33475B;max-width:820px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:20px;font-size:14px;line-height:20px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.sw{width:14px;height:14px;border-radius:4px;display:inline-block}
+.views{display:flex;gap:4px;margin-top:24px}
+.views button{font:inherit;border:0;background:none;padding:10px 16px;border-bottom:3px solid transparent;color:#33475B;cursor:pointer}
+.views button[aria-selected=true]{border-bottom-color:#0D4CD3;color:#0D4CD3;font-weight:700}
+.nav{display:flex;flex-wrap:wrap;gap:8px;padding:16px 0}
+.nav a{font-size:14px;line-height:20px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;color:var(--text);text-decoration:none}
+.nav a:hover{border-color:currentColor}
+section.branch{background:#fff;border-radius:16px;margin:16px 0;padding:24px;border-top:5px solid var(--c)}
+section.branch h2{margin:0;font-size:24px;line-height:32px;color:var(--c)}
+.cols{display:flex;gap:0;margin:12px 0 4px;font-size:12px;line-height:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.scroll{overflow-x:auto;padding:8px 0 12px}
+.hint{display:none;font-size:13px;color:var(--muted)}
+/* дерево слева направо */
+.tree{display:flex;align-items:center}
+.tree ul{list-style:none;margin:0 0 0 28px;padding:0;display:flex;flex-direction:column;justify-content:center;position:relative}
+.tree li{position:relative;display:flex;align-items:center;padding:6px 0 6px 24px}
+.tree ul>li::before{content:"";position:absolute;left:0;top:0;bottom:0;border-left:2px solid var(--c)}
+.tree ul>li:first-child::before{top:50%}
+.tree ul>li:last-child::before{bottom:50%}
+.tree ul>li:only-child::before{display:none}
+.tree ul>li::after{content:"";position:absolute;left:0;top:50%;width:24px;border-top:2px solid var(--c)}
+.tree .node+ul::before{content:"";position:absolute;left:-28px;top:50%;width:28px;border-top:2px solid var(--c)}
+.node{flex:none;width:230px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;line-height:21px}
+.node.l1{font-weight:700;border:2px solid var(--c);background:var(--cl)}
+.node.sol{background:var(--cl);border-color:var(--c);font-weight:700}
+.node.sol::before{content:"Решение";display:block;font-size:11px;line-height:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--c);margin-bottom:2px}
+.tree>ul{margin-left:0}
+.tree>ul>li{padding-left:0;padding-top:10px;padding-bottom:10px}
+.tree>ul>li::before,.tree>ul>li::after{display:none}
+.tree>ul>li>.node{font-weight:700;border:2px solid var(--c);background:#fff}
+/* список решений */
+.sol-list{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.sol-card{background:#fff;border-radius:16px;padding:20px 24px;border-top:5px solid var(--c)}
+.sol-card h3{margin:0 0 12px;font-size:20px;line-height:28px;color:var(--c)}
+.sol-card li{margin:8px 0}
+.sol-card li b{display:block}
+.sol-card li small{color:var(--muted);font-size:14px;line-height:20px}
+.sol-card ul{padding-left:20px;margin:0}
+footer{color:var(--muted);font-size:13px;line-height:20px;padding:24px 0 40px}
+[hidden]{display:none!important}
+@media (max-width:700px){
+  .wrap{padding:0 12px}
+  h1{font-size:24px;line-height:32px}
+  .root{font-size:17px;padding:8px 18px}
+  section.branch{padding:16px}
+  .hint{display:block}
+  .node{width:210px;font-size:14px;line-height:20px}
+  .sol-list{grid-template-columns:1fr}
+}
+@media print{.views,.nav,.hint{display:none}section.branch{break-inside:avoid}.scroll{overflow:visible}}
+</style>
+</head>
+<body>
+<header><div class="wrap head">
+  <p class="kicker">Исследование проекта «Уверенность в будущем» · программа «Код лидера»</p>
+  <h1>Карта страха будущего: от страха к решению</h1>
+  <div class="root">Страх будущего: заработать сейчас и убежать</div>
+  <p class="lead">Четыре группы страхов. Каждая ветка читается слева направо: страх → его источник → что за ним стоит → решение.</p>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--c-macro)"></i>Страх внешней среды</span>
+    <span><i class="sw" style="background:var(--c-inner)"></i>Внутренние страхи</span>
+    <span><i class="sw" style="background:var(--c-family)"></i>Страх за семью</span>
+    <span><i class="sw" style="background:var(--c-work)"></i>Страхи на работе</span>
+    <span><i class="sw" style="background:#fff;border:2px solid #66727F"></i>Карточка с подписью «Решение» — предложенное решение</span>
+  </div>
+  <div class="views" role="tablist"><button role="tab" aria-selected="true" data-v="map">Карта</button><button role="tab" aria-selected="false" data-v="list">Решения списком</button></div>
+</div></header>
+<main class="wrap">
+  <nav class="nav" id="nav"></nav>
+  <div id="map"></div>
+  <div id="list" hidden></div>
+</main>
+<footer class="wrap">Карта составлена командой проекта по итогам исследования: опрос сотрудников, глубинные интервью, кабинетный анализ.</footer>
+<script>
+/* s: true — решение */
+var DATA = [
+ { id: 'macro', title: 'Страх внешней неконтролируемой среды (макро-страхи)', c: 'macro', ch: [
+   { t: 'Политическая и военная нестабильность', ch: [ { t: 'СВО и риски эскалации' }, { t: 'Власть меняет правила игры' }, { t: 'Активные военные действия в регионе' } ] },
+   { t: 'Финансовая нестабильность', ch: [ { t: 'Рост цен и инфляция' },
+     { t: 'Недоверие к финансовой системе', ch: [ { t: 'Уровень доверия сотрудников к Группе очень высок', ch: [ { t: 'ЦФА на активы Группы', s: 1 }, { t: 'Программа лояльности для сотрудников', s: 1 } ] } ] },
+     { t: 'Опыт 90-х' } ] },
+   { t: 'Внешняя неопределённость', ch: [
+     { t: 'Исчезновение внешних опор определённости', ch: [ { t: 'Готовые ответы и смыслы кончились, традиции ослабли; на их место приходят гуру и инфлюенсеры-проводники', ch: [ { t: 'Возвращение ритма жизни: простые повторяемые ритуалы там, где люди бывают каждый день', s: 1 } ] } ] },
+     { t: 'Информационная неопределённость, токсичность', ch: [ { t: 'Нет личных примеров позитивной реализации в опыте поколений', ch: [ { t: 'Возвращение ценностей: истории (сторителлинг), традиции, династии, наследие', s: 1 } ] } ] } ] } ] },
+ { id: 'inner', title: 'Внутренние страхи', c: 'inner', ch: [
+   { t: 'Бессмысленность собственных усилий', ch: [
+     { t: 'Работа не приносит достойного дохода' },
+     { t: 'Не могу влиять, ничего не изменится', ch: [ { t: 'Чувство недооценённости: усилия не важны обществу', ch: [ { t: 'Программа социальных рейтингов', s: 1 } ] } ] },
+     { t: 'Система меня использует и не защитит', ch: [
+       { t: 'Информационные пузыри формируют поляризацию ценностей', ch: [ { t: 'Программы медиаграмотности для школьников, студентов, сотрудников компаний', s: 1 } ] },
+       { t: 'Глобализация и цифровые технологии делают работу гибче, но менее защищённой' },
+       { t: 'Цифровизация управления и взаимодействий' } ] } ] },
+   { t: 'Безосновательность существования', ch: [
+     { t: 'Общество раздроблено, нельзя положиться на других', ch: [ { t: 'Я важен, у меня есть сообщество', ch: [ { t: 'Банк времени — сеть взаимопомощи', s: 1 }, { t: 'Программа «Свои люди» — корпоративное сообщество с рекомендациями', s: 1 }, { t: 'Всероссийский навигатор социальных связей — поиск сообщества по ценностям', s: 1 } ] } ] },
+     { t: 'Будущее непредсказуемо', ch: [
+       { t: 'Люди могут влиять на будущее', ch: [ { t: 'Лаборатория будущего', s: 1 } ] },
+       { t: 'Превратить сотрудников из «временщиков» в соратников', ch: [ { t: 'Корпоративный командный индекс', s: 1 } ] },
+       { t: 'Помочь пройти через кризисные жизненные этапы', ch: [ { t: 'Навигатор жизненных сценариев', s: 1 } ] } ] } ] } ] },
+ { id: 'family', title: 'Страх за семью и ближайшее окружение', c: 'family', ch: [
+   { t: 'Здоровье близких и доступность медицины', ch: [
+     { t: 'Невозможность защитить', ch: [ { t: 'Доступ к качественной медицинской информации, профилактические меры', ch: [ { t: 'Государственный центр, чат-бот в рамках ОМС', s: 1 }, { t: 'Единая цифровая платформа семейной медицины', s: 1 }, { t: 'Государственный сертификат наследника', s: 1 } ] } ] },
+     { t: 'Качественная медицина только в столице', ch: [ { t: 'Доступ к медицинской информации, развитие компетенций', ch: [ { t: 'Программы развития карьеры медиков, мобильные клиники', s: 1 } ] } ] },
+     { t: 'Страх болезней, страх стать обузой', ch: [
+       { t: 'Человек может быть полезным, изменения временны', ch: [ { t: 'Больше информации о психологической поддержке в медиа', s: 1 } ] },
+       { t: 'Смерть придаёт жизни ценность', ch: [ { t: 'Мобильный хоспис', s: 1 }, { t: 'Школа достойного ухода (паллиатив на дому)', s: 1 } ] } ] } ] },
+   { t: 'Будущее детей и образование', ch: [
+     { t: 'Неэффективность системы образования', ch: [ { t: 'Возможность получить базовые знания', ch: [ { t: 'Конференции инициатив, кафедра софт-скиллов', s: 1 } ] } ] },
+     { t: 'ИИ заменит людей на работе', ch: [ { t: 'Возможность учиться новому: ИИ забирает рутину', ch: [ { t: 'Платформа для апскиллинга, курсы переобучения', s: 1 } ] } ] },
+     { t: 'Непредсказуемые жизненные сценарии', ch: [ { t: 'Неопределённость — пространство для свободы', ch: [ { t: 'Сообщества, волонтёрство', s: 1 } ] } ] } ] },
+   { t: 'Непредсказуемость семейных отношений', ch: [
+     { t: 'Травматичный опыт', ch: [ { t: 'Укрепление через прожитые неудачи', ch: [ { t: 'Тренажёры для развития позитивного опыта', s: 1 } ] } ] },
+     { t: 'Страх не справиться с ролью, боязнь ответственности' } ] } ] },
+ { id: 'work', title: 'Страхи на работе', c: 'work', ch: [
+   { t: 'Внедрение ИИ', ch: [
+     { t: 'Угроза занятости', ch: [ { t: 'Гарантия переобучения при автоматизации', ch: [ { t: 'Академия опережающих профессий', s: 1 }, { t: 'Внутренняя биржа ролей', s: 1 }, { t: 'Контракты опережающего роста', s: 1 } ] } ] },
+     { t: 'Обесценивание опыта', ch: [ { t: 'Закрыть страх быть забытым и потерю знаний для компании', ch: [ { t: 'Перекрёстное наставничество: опытные передают знания молодым, а молодые учат старших цифровым навыкам и работе с ИИ', s: 1 } ] } ] } ] },
+   { t: 'Организационные изменения', ch: [
+     { t: 'Нестабильность в компании', ch: [ { t: 'Руководители сами в стрессе и часто транслируют тревогу на команду, даже не осознавая этого', ch: [ { t: 'Обучение руководителей ментальному здоровью', s: 1 } ] } ] },
+     { t: 'Отсутствие карьерных перспектив' },
+     { t: 'Разрушение классической карьерной модели', ch: [ { t: 'Когда долгий путь не гарантирует результата, логичнее искать быстрые обходные варианты', ch: [ { t: 'Платформа гибкого опыта: микропроекты, внутренние проектные стажировки и наставничество', s: 1 } ] } ] },
+     { t: 'Страх подвести команду, не вижу пути в хаосе', ch: [ { t: 'Лидерство — не знание ответов, а способность держать направление', ch: [ { t: 'Атлас управленческих компетенций, школа кризисных управленцев', s: 1 } ] } ] } ] } ] }
+];
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function node(n,lvl){var h='<li><div class="node'+(n.s?' sol':'')+'">'+esc(n.t)+'</div>';if(n.ch&&n.ch.length)h+='<ul>'+n.ch.map(function(x){return node(x,lvl+1)}).join('')+'</ul>';return h+'</li>'}
+function vars(c){return '--c:var(--c-'+c+');--cl:var(--c-'+c+'-l)'}
+var map='',nav='',list='';
+DATA.forEach(function(b){
+  nav+='<a href="#'+b.id+'" style="color:var(--c-'+b.c+')">'+esc(b.title)+'</a>';
+  map+='<section class="branch" id="'+b.id+'" style="'+vars(b.c)+'"><h2>'+esc(b.title)+'</h2><p class="hint">Карту можно прокручивать вбок →</p><div class="scroll"><div class="tree"><ul>'+b.ch.map(function(x){return node(x,2)}).join('')+'</ul></div></div></section>';
+  var items=[];(function walk(n,path){(n.ch||[]).forEach(function(x){if(x.s)items.push([x.t,path[0]]);else walk(x,path.concat(x.t))})})(b,[]);
+  var g={};b.ch.forEach(function(top){(function walk(n){(n.ch||[]).forEach(function(x){if(x.s){(g[top.t]=g[top.t]||[]).push(x.t)}else walk(x)})})(top)});
+  list+='<div class="sol-card" style="'+vars(b.c)+'"><h3>'+esc(b.title)+'</h3><ul>'+Object.keys(g).map(function(k){return '<li><b>'+esc(k)+'</b><small>'+g[k].map(esc).join(' · ')+'</small></li>'}).join('')+'</ul></div>';
+});
+document.getElementById('map').innerHTML=map;document.getElementById('nav').innerHTML=nav;
+document.getElementById('list').innerHTML='<div class="sol-list">'+list+'</div>';
+document.querySelectorAll('.views button').forEach(function(b){b.addEventListener('click',function(){var v=b.getAttribute('data-v');document.querySelectorAll('.views button').forEach(function(x){x.setAttribute('aria-selected',String(x===b))});document.getElementById('map').hidden=v!=='map';document.getElementById('nav').hidden=v!=='map';document.getElementById('list').hidden=v!=='list'})});
+</script>
+</body>
+</html>
